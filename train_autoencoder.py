@@ -1,8 +1,6 @@
 import torch as t
 from torch import nn
 
-from autoencoder import AutoEncoderMNIST
-from utils import get_data_loader
 
 
 B = 32
@@ -32,6 +30,9 @@ def train(model:nn.Module, lr: float, epochs: int, data_loader: t.utils.data.Dat
 
 
 if __name__=="__main__":
+    from autoencoder import AutoEncoderMNIST
+    from utils import get_data_loader
+    
     model = AutoEncoderMNIST()
     train_dl, _ = get_data_loader(B)
     train(model, LR, EPOCHS, train_dl)
