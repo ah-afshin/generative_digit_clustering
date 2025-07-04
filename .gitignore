@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+*.env
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Logs and debug
+logs/
+*.log
+
+# Dataset and generated files
+data/
+datasets/
+results/
+outputs/
+
+# Model checkpoints and trained models
+*.pth
+*.pt
+checkpoints/
+
+# VS Code settings
+.vscode/
+
+# System files
+.DS_Store
+Thumbs.db
