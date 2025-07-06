@@ -2,6 +2,9 @@ from sklearn.cluster import KMeans, DBSCAN
 import torch as t
 
 
+EPSILON = 10.8
+
+
 def cluster_kmeans(embeddings: t.Tensor, n_clusters: int = 10, random_state: int|None = None) -> t.Tensor:
     """KMeans clustering on embeddings.
     
@@ -39,16 +42,16 @@ def cluster_dbscan(embeddings: t.Tensor, epsilon: int = 1) -> t.Tensor:
 if __name__=="__main__":
     from utils import extract_encodings
     from utils import get_data_loader
-    from autoencoder import AutoEncoderMNIST
+    from autoencoder import SemiSupervisedAutoEncoderMNIST
     from visualize import plot_tsne
 
-    model = AutoEncoderMNIST()
-    model.load_state_dict(t.load(f="models/autoencoder.pth"))
+    model = SemiSupervisedAutoEncoderMNIST()
+    model.load_state_dict(t.load(f="models/semisupervised_autoencoder.pth"))
     _, test_dl = get_data_loader(32)
     encodec_vec, true_labels = extract_encodings(model, test_dl)
     
-    kmean_pred = cluster_kmeans(encodec_vec, random_state=418)
-    dbscan_pred = cluster_dbscan(encodec_vec, 1.95)
-    plot_tsne(encodec_vec, kmean_pred, "Encodings k-mean pred labels")
+    # kmean_pred = cluster_kmeans(encodec_vec, random_state=418)
+    dbscan_pred = cluster_dbscan(encodec_vec, EPSILON)
+    # plot_tsne(encodec_vec, kmean_pred, "Encodings k-mean pred labels")
     plot_tsne(encodec_vec, dbscan_pred, "Encodings DBSCAN pred labels")
-    plot_tsne(encodec_vec, true_labels, "Encodings true labels")
+    # plot_tsne(encodec_vec, true_labels, "Encodings true labels")
