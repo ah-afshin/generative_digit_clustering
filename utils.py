@@ -26,18 +26,24 @@ def get_data_loader(B: int) -> tuple[DataLoader, DataLoader]:
     return train_loader, test_loader
 
 
-def extract_encodings(model: nn.Module, dataloader: DataLoader) -> tuple[list, list]:
+def extract_encodings(model: nn.Module, dataloader: DataLoader, return_mu: bool = False) -> tuple[list, list]:
     encoded_data = []
     true_labels = []
     
     model.eval()
     with t.no_grad():
         for batch in dataloader:
-            
             x, y = batch
-            z = model(x, encode_decode_only='encode')
-            encoded_data.append(z)
+            
+            if return_mu:
+                # full-forward but just taking the mu
+                _, mu, _ = model(x)
+                encoded_data.append(mu)
+            else:
+                z = model(x, encode_decode_only='encode')
+                encoded_data.append(z)
             true_labels.append(y)
+    
     encoded_data = t.cat(encoded_data, dim=0)   # [N, B, latent_dim]   ->  [N, latent_dim]
     true_labels = t.cat(true_labels, dim=0)     # [N, B]               ->  [N]
     return encoded_data, true_labels

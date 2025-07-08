@@ -2,7 +2,7 @@ from sklearn.cluster import KMeans, DBSCAN
 import torch as t
 
 
-EPSILON = 10.8
+EPSILON = 1.0999
 
 
 def cluster_kmeans(embeddings: t.Tensor, n_clusters: int = 10, random_state: int|None = None) -> t.Tensor:
@@ -19,7 +19,7 @@ def cluster_kmeans(embeddings: t.Tensor, n_clusters: int = 10, random_state: int
     embeddings_np = embeddings.detach().cpu().numpy()
     kmeans = KMeans(n_clusters=n_clusters, random_state=random_state)
     kmeans.fit(embeddings_np)
-    return t.tensor(kmeans.labels_) # all the vectors should be torch.Tensor
+    return t.tensor(kmeans.labels_)     # all the vectors should be torch.Tensor for ploting
 
 
 def cluster_dbscan(embeddings: t.Tensor, epsilon: int = 1) -> t.Tensor:
@@ -36,17 +36,17 @@ def cluster_dbscan(embeddings: t.Tensor, epsilon: int = 1) -> t.Tensor:
     embeddings_np = embeddings.detach().cpu().numpy()
     dbscan = DBSCAN(epsilon)
     dbscan.fit(embeddings_np)
-    return t.tensor(dbscan.labels_) # all the vectors should be torch.Tensor
+    return t.tensor(dbscan.labels_)     # all the vectors should be torch.Tensor for ploting
 
 
 if __name__=="__main__":
     from utils import extract_encodings
     from utils import get_data_loader
-    from autoencoder import SemiSupervisedAutoEncoderMNIST
+    from autoencoder import VAEMNIST
     from visualize import plot_tsne
 
-    model = SemiSupervisedAutoEncoderMNIST()
-    model.load_state_dict(t.load(f="models/semisupervised_autoencoder.pth"))
+    model = VAEMNIST()
+    model.load_state_dict(t.load(f="models/vae_autoencoder_2.pth"))
     _, test_dl = get_data_loader(32)
     encodec_vec, true_labels = extract_encodings(model, test_dl)
     

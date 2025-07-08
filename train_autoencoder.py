@@ -4,15 +4,15 @@ from torch import nn
 
 
 B = 32
-LR = 0.005
-EPOCHS = 10
-ALPHA = 1.0
-BETA = 0.75
+LR = 1e-3
+EPOCHS = 35
+# ALPHA = 1.0
+BETA = 0.95
 
 
 def train(model:nn.Module, lr: float, epochs: int, data_loader: t.utils.data.DataLoader) -> None:
     optim = t.optim.Adam(model.parameters(), lr=lr)
-    loss_func = nn.MSELoss()
+    criterion = nn.MSELoss()
 
     model.train()
     for epoch in range(epochs):
@@ -22,7 +22,7 @@ def train(model:nn.Module, lr: float, epochs: int, data_loader: t.utils.data.Dat
             image, _ = batch
             output = model(image)
             
-            loss = loss_func(output, image.view(image.size(0), -1)) # flatten the image
+            loss = criterion(output, image.view(image.size(0), -1)) # flatten the image
             optim.zero_grad()
             loss.backward()
             optim.step()
@@ -56,11 +56,36 @@ def train_semisupervised(model:nn.Module, lr: float, epochs: int, alpha: float, 
         print(f"Epoch {epoch+1} | loss: {total_epoch_loss}")
 
 
+def train_vae(model:nn.Module, lr: float, epochs: int, beta: float, data_loader: t.utils.data.DataLoader) -> None:
+    optim = t.optim.Adam(model.parameters(), lr)
+    # criterion = nn.MSELoss()
+    criterion = nn.BCEWithLogitsLoss(reduction='sum') # someone suggested this, idk why
+
+    model.train()
+    for epoch in range(epochs):
+        total_epoch_loss = 0
+
+        for batch in data_loader:
+            x, _ = batch
+            x_recon, mu, logvar = model(x)
+
+            recon_loss = criterion(x_recon, x.view(x.size(0), -1))
+            kl_loss = -0.5 * t.sum(1 + logvar - mu.pow(2) - logvar.exp())
+            loss = (recon_loss + beta * kl_loss) / x.size(0)
+
+            optim.zero_grad()
+            loss.backward()
+            optim.step()
+
+            total_epoch_loss += loss.item()
+        if epoch%5==4: print(f"Epoch {epoch+1} | loss: {total_epoch_loss}")
+
+
 if __name__=="__main__":
-    from autoencoder import SemiSupervisedAutoEncoderMNIST
+    from autoencoder import VAEMNIST
     from utils import get_data_loader
     
-    model = SemiSupervisedAutoEncoderMNIST()
+    model = VAEMNIST()
     train_dl, _ = get_data_loader(B)
-    train_semisupervised(model, LR, EPOCHS, ALPHA, BETA, train_dl)
-    t.save(model.state_dict(), "models/semisupervised_autoencoder.pth")
+    train_vae(model, LR, EPOCHS, BETA, train_dl)
+    t.save(model.state_dict(), "models/vae_autoencoder_2.pth")

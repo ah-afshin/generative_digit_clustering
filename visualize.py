@@ -34,13 +34,40 @@ def plot_tsne(embeddings: t.Tensor, labels: t.Tensor, title:str, perplexity: int
     plt.show()
 
 
+def plot_constructions(model, dl):
+    """plot samples of reconstruction by model.
+    
+    Args:
+        model [Module]: a trained reconstruction model
+        dl [DataLoader]: a data loader of dataset samples
+    """  
+    model.eval()
+    with t.no_grad():
+        x, _ = next(iter(dl))
+        x = x[:8]                                       # select 8 images only
+        x_hat, _, _ = model(x)
+        x_hat = t.sigmoid(x_hat.view(-1, 1, 28, 28))    # reconstruct as an image
+
+        fig, axs = plt.subplots(2, 8, figsize=(15, 4))
+        for i in range(8):
+            axs[0, i].imshow(x[i].squeeze().numpy(), cmap='gray')
+            axs[0, i].set_title("Original")
+            axs[1, i].imshow(x_hat[i].squeeze().numpy(), cmap='gray')
+            axs[1, i].set_title("Reconstructed")
+            axs[0, i].axis("off")
+            axs[1, i].axis("off")
+        plt.tight_layout()
+        plt.show()
+
+
 if __name__=="__main__":
     from utils import extract_encodings
     from utils import get_data_loader
-    from autoencoder import AutoEncoderMNIST
+    from autoencoder import VAEMNIST
 
-    model = AutoEncoderMNIST()
-    model.load_state_dict(t.load(f="models/autoencoder.pth"))
+    model = VAEMNIST()
+    model.load_state_dict(t.load(f="models/vae_autoencoder_2.pth"))
     _, test_dl = get_data_loader(32)
     encodec_vec, true_labels = extract_encodings(model, test_dl)
     plot_tsne(encodec_vec, true_labels, "Encodings")
+    plot_constructions(model, test_dl)
