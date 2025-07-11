@@ -34,7 +34,7 @@ def plot_tsne(embeddings: t.Tensor, labels: t.Tensor, title:str, perplexity: int
     plt.show()
 
 
-def plot_constructions(model, dl):
+def plot_constructions(model, dl, input_labels=False):
     """plot samples of reconstruction by model.
     
     Args:
@@ -43,9 +43,12 @@ def plot_constructions(model, dl):
     """  
     model.eval()
     with t.no_grad():
-        x, _ = next(iter(dl))
-        x = x[:8]                                       # select 8 images only
-        x_hat, _, _ = model(x)
+        x, y = next(iter(dl))
+        x, y = x[:8], y[:8]                             # select 8 images only
+        if input_labels:
+            x_hat, _, _ = model(x, y)
+        else:
+            x_hat, _, _ = model(x)
         x_hat = t.sigmoid(x_hat.view(-1, 1, 28, 28))    # reconstruct as an image
 
         fig, axs = plt.subplots(2, 8, figsize=(15, 4))
@@ -60,14 +63,34 @@ def plot_constructions(model, dl):
         plt.show()
 
 
+def generate_and_show(model, label, num_samples=8, latent_dim=8):
+    with t.no_grad():
+        model.eval()
+        z = t.randn(num_samples, latent_dim)
+        y = t.full((num_samples,), label, dtype=t.long)
+        generated = model(z, y, encode_decode_only='decode').view(num_samples, 1, 28, 28)
+        generated = t.sigmoid(generated)
+
+    # show samples
+    fig, axs = plt.subplots(1, num_samples, figsize=(num_samples, 1.5))
+    for i in range(num_samples):
+        axs[i].imshow(generated[i, 0], cmap='gray')
+        axs[i].axis('off')
+    plt.suptitle(f'Generated samples for label {label}')
+    plt.show()
+
+
 if __name__=="__main__":
     from utils import extract_encodings
     from utils import get_data_loader
-    from autoencoder import VAEMNIST
+    from models import CVAEMNIST
 
-    model = VAEMNIST()
-    model.load_state_dict(t.load(f="models/vae_autoencoder_3.pth"))
+    model = CVAEMNIST()
+    model.load_state_dict(t.load(f="models/cvae_autoencoder.pth"))
     _, test_dl = get_data_loader(32)
     # encodec_vec, true_labels = extract_encodings(model, test_dl)
     # plot_tsne(encodec_vec, true_labels, "Encodings")
-    plot_constructions(model, test_dl)
+    plot_constructions(model, test_dl, input_labels=True)
+
+    y = int(input('input label: '))
+    generate_and_show(model, y)

@@ -42,7 +42,7 @@ def cluster_dbscan(embeddings: t.Tensor, epsilon: int = 1, min_samples: int = 5)
 if __name__=="__main__":
     from utils import extract_encodings
     from utils import get_data_loader
-    from autoencoder import VAEMNIST
+    from models import VAEMNIST
     from visualize import plot_tsne
 
     model = VAEMNIST()
