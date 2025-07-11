@@ -66,8 +66,8 @@ if __name__=="__main__":
     from autoencoder import VAEMNIST
 
     model = VAEMNIST()
-    model.load_state_dict(t.load(f="models/vae_autoencoder_2.pth"))
+    model.load_state_dict(t.load(f="models/vae_autoencoder_3.pth"))
     _, test_dl = get_data_loader(32)
-    encodec_vec, true_labels = extract_encodings(model, test_dl)
-    plot_tsne(encodec_vec, true_labels, "Encodings")
+    # encodec_vec, true_labels = extract_encodings(model, test_dl)
+    # plot_tsne(encodec_vec, true_labels, "Encodings")
     plot_constructions(model, test_dl)

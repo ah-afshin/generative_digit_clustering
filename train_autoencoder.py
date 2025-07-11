@@ -4,10 +4,10 @@ from torch import nn
 
 
 B = 32
-LR = 1e-3
-EPOCHS = 35
+LR = 2e-4
+EPOCHS = 50
 # ALPHA = 1.0
-BETA = 0.95
+BETA = 3.5
 
 
 def train(model:nn.Module, lr: float, epochs: int, data_loader: t.utils.data.DataLoader) -> None:
@@ -88,4 +88,4 @@ if __name__=="__main__":
     model = VAEMNIST()
     train_dl, _ = get_data_loader(B)
     train_vae(model, LR, EPOCHS, BETA, train_dl)
-    t.save(model.state_dict(), "models/vae_autoencoder_2.pth")
+    t.save(model.state_dict(), "models/vae_autoencoder_3.pth")
