@@ -19,11 +19,11 @@ logs/
 # Dataset and generated files
 data/
 datasets/
-results/
+# results/
 outputs/
 
 # Model checkpoints and trained models
-*.pth
+# *.pth
 *.pt
 checkpoints/
 
