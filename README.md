@@ -2,6 +2,18 @@
 
 This project explores different autoencoder architectures to learn meaningful compressed representations of handwritten digit images (MNIST dataset). These representations are used for clustering and generating new digit images.
 
+## Table of Contents
+
+- [Overview](#unsupervised-digit-clustering)
+- [Components](#components)
+- [Getting Started](#getting-started)
+- [Results](#results)
+  - [Basic AutoEncoder](#basic-autoencoder)
+  - [Semi-Supervised AutoEncoder](#semi-supervised-autoencoder)
+  - [Variational AutoEncoder (VAE)](#variational-autoencoder)
+  - [Conditional Variational AutoEncoder (CVAE)](#conditional-variational-autoencoder)
+- [License](#license)
+
 ## Components
 
 - `models.py` – Definitions of various autoencoder models.
@@ -15,7 +27,7 @@ First install the requirements
 ```bash
 pip install -r requirements.txt
 ```
-Now you can train a model in `train_autoencoder.py`, just create an instance of model class, get data ready and call the train function related to your model, e.g:
+You can train a model using `train_autoencoder.py`, simply create an instance of model class, get data ready and call the train function related to your model, e.g:
 ```python
 model = SemiSupervisedAutoEncoderMNIST()
 train_dl, _ = get_data_loader(B)
@@ -86,7 +98,7 @@ embedding vectors are used for clustering, here you can see the results:
 ![kmeans](results/vae/t-SNE%20Visualization%20of%20K-Mean%20Encodings%20vae1.png)
 ![dbscan](results/vae/t-SNE%20Visualization%20of%20DBSCAN%20Encodings%20vae1.png)
 
-I tried to find optimal hyper params to make a latent space that DBSCAN and find clusters in it, you can see some details on the attept in [this notebook](notebooks/explore_dbscan_params.ipynb), but it didn't work very well.
+I tried to find optimal hyperparameters to shape a latent space where DBSCAN could find clusters. you can see some details of the items in [this notebook](notebooks/explore_dbscan_params.ipynb), but it didn't work very well.
 ```
 Epoch 5 | loss: 302063.5551300049
 Epoch 10 | loss: 290953.70220947266
