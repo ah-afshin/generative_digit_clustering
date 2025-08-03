@@ -26,7 +26,7 @@ def get_data_loader(B: int) -> tuple[DataLoader, DataLoader]:
     return train_loader, test_loader
 
 
-def extract_encodings(model: nn.Module, dataloader: DataLoader, return_mu: bool = False) -> tuple[list, list]:
+def extract_encodings(model: nn.Module, dataloader: DataLoader, return_mu: bool = False) -> tuple[t.Tensor, t.Tensor]:
     encoded_data = []
     true_labels = []
     
