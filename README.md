@@ -1,4 +1,4 @@
-# Unsupervised Digit Clustering
+# Generative Digit Clustering
 
 This project explores different autoencoder architectures to learn meaningful compressed representations of handwritten digit images (MNIST dataset). These representations are used for clustering and generating new digit images.
 
