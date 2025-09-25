@@ -102,7 +102,10 @@ class VAEMNIST(nn.Module):
         eps = t.randn_like(std)     # taking a sample of it
         return mu + eps * std       # z = μ + σ * ε (ε ~ N(0,1))
     
-    def forward(self, x: t.Tensor, encode_decode_only: str|None = None) -> tuple[t.Tensor, t.Tensor, t.Tensor]:
+    def forward(self, x: t.Tensor, encode_decode_only: str|None = None, label = None) -> tuple[t.Tensor, t.Tensor, t.Tensor]:
+        # We also input the label variable here, however we don't need it.
+        # This is so that we can use the same function for models in generating images.
+        # You can see the reason for this variable in the CVAE model.
         if encode_decode_only:
             match encode_decode_only.lower():
                 case 'encode':

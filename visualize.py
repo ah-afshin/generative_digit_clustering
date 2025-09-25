@@ -67,8 +67,8 @@ def generate_and_show(model, label, num_samples=8, latent_dim=8):
     with t.no_grad():
         model.eval()
         z = t.randn(num_samples, latent_dim)
-        y = t.full((num_samples,), label, dtype=t.long)
-        generated = model(z, y, encode_decode_only='decode').view(num_samples, 1, 28, 28)
+        y = t.full((num_samples,), label if isinstance(label, int) else 0, dtype=t.long)
+        generated = model(z, label=y, encode_decode_only='decode').view(num_samples, 1, 28, 28)
         generated = t.sigmoid(generated)
 
     # show samples
@@ -83,7 +83,12 @@ def generate_and_show(model, label, num_samples=8, latent_dim=8):
 if __name__=="__main__":
     from utils import extract_encodings
     from utils import get_data_loader
-    from models import CVAEMNIST
+    from models import CVAEMNIST, VAEMNIST
+
+    model = VAEMNIST()
+    model.load_state_dict(t.load(f="models/vae_autoencoder_1.pth"))
+    _, test_dl = get_data_loader(32)
+    generate_and_show(model, '<NO LABEL>')
 
     model = CVAEMNIST()
     model.load_state_dict(t.load(f="models/cvae_autoencoder.pth"))

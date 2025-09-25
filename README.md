@@ -118,6 +118,11 @@ embedding vectors are used for clustering, here you can see the results:
 ![kmeans](results/vae/t-SNE%20Visualization%20of%20K-Mean%20Encodings%20vae2.png)
 ![dbscan](results/vae/t-SNE%20Visualization%20of%20DBSCAN%20Encodings%20vae2.png)
 
+Here are some of generated images:
+![vae gerated digits](results/vae/vae%20genration.png)
+
+**note**: This VAE model does not know anything about the types of digits, so it can't be used to generate a specific digit; the images generated (pictures above) represent the model's general impression of *what numbers look like in general*. See the conditioned version of this model below.
+
 ## Conditional Variational AutoEncoder
 Extends the Variational AutoEncoder by conditioning both the encoder and decoder on label information. This allows the model to learn class-specific latent representations and enables generating new images conditioned on a target label. It improves both clustering and generation quality, especially in semi-supervised settings.
 ```
@@ -130,10 +135,10 @@ Epoch 25 | loss: 244065.13005828857
 ![reconstruction results](results/cvae/cvae%20reconstructions.png)
 
 Here are some of generated images:
-![3](results/cvae/cvae%20genration%203.png)
-![4](results/cvae/cvae%20genration%204.png)
-![5](results/cvae/cvae%20genration%205.png)
-![8](results/cvae/cvae%20genration%208.png)
+![vae gerated digit 3](results/cvae/cvae%20genration%203.png)
+![vae gerated digit 4](results/cvae/cvae%20genration%204.png)
+![vae gerated digit 5](results/cvae/cvae%20genration%205.png)
+![vae gerated digit 8](results/cvae/cvae%20genration%208.png)
 
 
 ## License
